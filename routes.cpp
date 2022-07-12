@@ -333,9 +333,9 @@ namespace ga
             int totalDistance = 0;
 
             this->map_routes(individual, [this, &totalDistance, individual] (int firstLocation, int lastLocation) {
-                for (int i = firstLocation; i < lastLocation; i++)
+                for (int i = firstLocation; i <= lastLocation; i++)
                 {
-                    int currLocation = individual.chromossome.genes[i];
+                    int currLocation = i == lastLocation ? 0 : individual.chromossome.genes[i];
                     int prevLocation = i == firstLocation ? 0 : individual.chromossome.genes[i - 1];
 
                     totalDistance += this->get_distance(currLocation, prevLocation);
