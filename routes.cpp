@@ -412,6 +412,16 @@ namespace ga
 
                     individual.chromossome.genes[index1] = individual.chromossome.genes[index2];
                     individual.chromossome.genes[index2] = aux;
+
+                    Interval routesInterval(individual.chromossome.genes, this->numberOfLocations, individual.chromossome.genes.size());
+                    this->randomizer.set_range(1, this->numberOfLocations - 1);
+                    std::unordered_set<int> bp_map(routesInterval.begin(), routesInterval.end() - 1);
+
+                    int new_bp = this->randomizer.get_number(bp_map);
+                    this->randomizer.set_range(routesInterval.startIndex, routesInterval.endIndex - 1);
+                    int pos = this->randomizer.get_number();
+
+                    individual.chromossome.genes[pos] = new_bp;
                 }
             });
         }
@@ -433,8 +443,10 @@ namespace ga
                 int p1, p2;
                 Crossover crossover1;
                 Crossover crossover2;
+                int maxOfTries = 15;
+                int tries = 1;
 
-                while (!crossover1.is_acceptable() && !crossover2.is_acceptable())
+                while ((!crossover1.is_acceptable() && !crossover2.is_acceptable()) || tries <= maxOfTries)
                 {
                     std::tie(p1, p2) = this->make_selection();
 
@@ -454,6 +466,8 @@ namespace ga
                             this->calculate_fitness(crossover2.offspring);
                         }
                     }
+
+                    tries++;
                 }
 
                 this->population.individuals[p1] = crossover1.offspring;
