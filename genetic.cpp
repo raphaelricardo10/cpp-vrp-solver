@@ -154,7 +154,7 @@ namespace ga
     private:
         void generate_breakpoints(int qty, RandomizerInt &randomizer)
         {
-            BreakpointSet breakpoints(this->chromossome.genes, qty, randomizer);
+            BreakpointSet breakpoints(this->chromossome.genes, qty - 1, randomizer);
 
             this->chromossome.genes.reserve(breakpoints.values.size());
             this->chromossome.genes.insert(this->chromossome.genes.end(), breakpoints.values.begin(), breakpoints.values.end());
