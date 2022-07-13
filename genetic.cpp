@@ -92,14 +92,13 @@ namespace ga
 
         BreakpointSet(std::vector<int> &v, int qty, RandomizerInt &randomizer)
         {
+            int numParts = v.size() / qty;
             for (int i = 0; i < qty; i++)
             {
+                randomizer.set_range(numParts * i, std::min(numParts * (i + 1), (int) v.size() - 1));
                 int breakpoint = randomizer.get_number(this->unordered_values);
 
-                this->unordered_values.insert(breakpoint - 1);
                 this->unordered_values.insert(breakpoint);
-                this->unordered_values.insert(breakpoint + 1);
-
                 this->values.insert(breakpoint);
             }
         }
