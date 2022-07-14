@@ -22,18 +22,6 @@ namespace ga
             this->endIndex = std::max(index1, index2);
         }
 
-        Interval(std::vector<int> &v, int minIndex, int maxIndex, RandomizerInt &randomizer)
-        {
-            this->v = &v;
-
-            randomizer.set_range(minIndex, maxIndex);
-            int index1 = randomizer.get_number();
-            int index2 = randomizer.get_number(index1);
-
-            this->startIndex = std::min(index1, index2);
-            this->endIndex = std::max(index1, index2);
-        }
-
         Interval(std::vector<int> &v, RandomizerInt &randomizer)
         {
             randomizer.set_range(v);
@@ -257,21 +245,6 @@ namespace ga
             }
         }
 
-        void regenerate_routes(Individual &individual)
-        {
-            Interval randomBpInterval(individual.chromossome.genes, this->numberOfRoutes, individual.chromossome.genes.size() - 1, this->randomizer);
-
-            std::unordered_set<int> bp_map(randomBpInterval.begin(), randomBpInterval.end() - 1);
-
-            this->randomizer.set_range(1, this->numberOfLocations);
-
-            for(int i = randomBpInterval.startIndex; i <= randomBpInterval.endIndex; i++){
-                int bp = this->randomizer.get_number(bp_map);
-                bp_map.insert(bp);
-                individual.chromossome.genes[i] = bp;
-            }
-        }
-
     public:
         int numberOfRoutes;
         int numberOfLocations;
@@ -440,7 +413,15 @@ namespace ga
                     individual.chromossome.genes[index1] = individual.chromossome.genes[index2];
                     individual.chromossome.genes[index2] = aux;
 
-                    this->regenerate_routes(individual);
+                    Interval routesInterval(individual.chromossome.genes, this->numberOfLocations, individual.chromossome.genes.size());
+                    this->randomizer.set_range(1, this->numberOfLocations - 1);
+                    std::unordered_set<int> bp_map(routesInterval.begin(), routesInterval.end() - 1);
+
+                    int new_bp = this->randomizer.get_number(bp_map);
+                    this->randomizer.set_range(routesInterval.startIndex, routesInterval.endIndex - 1);
+                    int pos = this->randomizer.get_number();
+
+                    individual.chromossome.genes[pos] = new_bp;
                 }
             });
         }
