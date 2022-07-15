@@ -373,6 +373,11 @@ namespace ga
                     Interval randomRoute(individual.chromossome.genes, this->numberOfLocations,this->randomizer);
                     this->randomizer.set_range(randomRoute.startIndex, randomRoute.endIndex);
 
+                    int best_j = 0;
+                    int best_distance = 0;
+
+                    int best_i = randomRoute.startIndex;
+
                     for(int i = randomRoute.startIndex + 1; i < randomRoute.endIndex - 1; i++){
                         int i_neigh = this->get_distance(i, i-1) + this->get_distance(i, i+1);
 
@@ -385,13 +390,21 @@ namespace ga
                             int currTotalDistance = i_neigh + j_neigh;
                             int newTotalDistance = i_in_j + j_in_i;
 
-                            if(newTotalDistance < currTotalDistance){
-                                int aux = individual.chromossome.genes[i];
-                                individual.chromossome.genes[i] = individual.chromossome.genes[j];
-                                individual.chromossome.genes[j] = aux;
+                            if(best_j == 0 && best_i == randomRoute.startIndex){
+                                best_j = j;
+                                best_distance = std::min(currTotalDistance, newTotalDistance);
+                            }
+
+                            if(newTotalDistance < currTotalDistance && newTotalDistance < best_distance){
+                                best_j = j;
                             }
                         }
                     }
+
+                    int aux = individual.chromossome.genes[best_i];
+                    individual.chromossome.genes[best_i] = individual.chromossome.genes[best_j];
+                    individual.chromossome.genes[best_j] = aux;
+
                 }
             });
         }
