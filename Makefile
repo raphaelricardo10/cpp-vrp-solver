@@ -1,10 +1,8 @@
-libpath = src/lib/ga
-
 lib:
-	g++ --shared -o ${libpath}/ga.so ${libpath}/routes.cpp -fPIC
+	g++ --shared -o ga.so routes.cpp -fPIC
 
 lib-mac:
-	clang++ -std=c++20 -stdlib=libc++ --shared ${libpath}/routes.cpp -o ${libpath}/ga.so
+	clang++ -std=c++20 -stdlib=libc++ --shared routes.cpp -o ga.so
 
 main-mac:
-	clang++ -std=c++20 -stdlib=libc++ ${libpath}/main.cpp -o ${libpath}/main
+	clang++ -std=c++20 -stdlib=libc++ main.cpp -o main
